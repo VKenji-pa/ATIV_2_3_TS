@@ -24,7 +24,16 @@ class TestCase:
         pass
     
 class TestSuite:
-    pass
+    
+    def __init__(self):
+        self.tests =  []
+        
+    def add_test(self, test):
+        self.tests.append(test)
+        
+    def run(self, result):
+        for test in self.tests:
+            test.run(result)
 
 class TestResult:
     RUN_MSG = "run"
@@ -50,15 +59,14 @@ class TestResult:
                f'{str(len(self.failures))} {self.FAILURE_MSG}, ' \
                f'{str(len(self.errors))} {self.ERROR_MSG}'
     
-
 class TestLoader:
     pass
 
 class TestRunner:   
     pass
 
-####### EXEMPLO DE USO ###
-
+# PARTE 2-3
+        
 class MyTest(TestCase):
 
     def set_up(self):
@@ -76,6 +84,8 @@ class MyTest(TestCase):
     def test_c(self):
         print('test_c')
         
+# PARTE 4
+
 class TestStub(TestCase):
     
     def test_success(self):
@@ -135,7 +145,6 @@ class TestCaseTest(TestCase):
         stub.run(self.result)
         stub = TestStub("test_error")
         stub.run(self.result)
-        
         assert self.result.summary() == "3 run, 1 failed, 1 error"
         
     def test_was_set_up(self):
@@ -158,50 +167,35 @@ class TestCaseTest(TestCase):
         spy.run(self.result)
         assert spy.log == "set_up test_method tear_down"
 
-# PARTE 2-3
-print("Parte 2-3\n")
+# PARTE 5
 
-result = TestResult()
-     
-test = MyTest('test_a')
-test.run(result)
-
-test = MyTest('test_b')
-test.run(result)
-
-test = MyTest('test_c')
-test.run(result)
-
-print(result.summary())
-
-print("\nParte 4\n")
-
-## PARTE 4
-
-result = TestResult()
-
-test = TestCaseTest('test_result_success_run')
-test.run(result)
-
-test = TestCaseTest('test_result_failure_run')
-test.run(result)
-
-test = TestCaseTest('test_result_error_run')
-test.run(result)
-
-test = TestCaseTest('test_result_multiple_run')
-test.run(result)
-
-test = TestCaseTest('test_was_set_up')
-test.run(result)
-
-test = TestCaseTest('test_was_run')
-test.run(result)
-
-test = TestCaseTest('test_was_tear_down')
-test.run(result)
-
-test = TestCaseTest('test_template_method')
-test.run(result)
-
-print(result.summary())
+class TestSuiteTest(TestCase):
+    
+    def test_suite_size(self):
+        suite = TestSuite()
+        
+        suite.add_test(TestStub("test_success"))
+        suite.add_test(TestStub("test_failure"))
+        suite.add_test(TestStub("test_error"))
+        
+        assert len(suite.tests) == 3
+        
+    def test_suite_success_run(self):
+        result = TestResult()
+        suite = TestSuite()
+        
+        suite.add_test(TestStub("test_success"))
+        suite.run(result)
+        
+        assert result.summary() == "1 run, 0 failed, 0 error"
+        
+    def test_suite_multiple_run(self):
+        result = TestResult()
+        suite = TestSuite()
+        
+        suite.add_test(TestStub("test_success"))
+        suite.add_test(TestStub("test_failure"))
+        suite.add_test(TestStub("test_error"))
+        suite.run(result)
+        
+        assert result.summary() == "3 run, 1 failed, 1 error"
