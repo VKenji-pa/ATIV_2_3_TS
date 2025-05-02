@@ -23,6 +23,22 @@ class TestCase:
     def tear_down(self):
         pass
     
+    def assert_equal(self, actual, expected):
+        if expected != actual:
+            raise AssertionError(f"Expected {expected}, but got {actual}")
+        
+    def assert_true(self, condition):
+        if not condition:
+            raise AssertionError(f"{condition} is not True")
+    
+    def assert_false(self, condition):
+        if condition:
+            raise AssertionError(f"{condition} is not False")
+        
+    def assert_in(self, member, container):
+        if member not in container:
+            raise AssertionError(f"{member} is not in {container}")
+    
 class TestSuite:
     
     def __init__(self):
@@ -167,6 +183,7 @@ class TestCaseTest(TestCase):
         stub.run(self.result)
         assert self.result.summary() == "3 run, 1 failed, 1 error"
         
+    # PARTE 4   
     def test_was_set_up(self):
         spy = TestSpy("test_method")
         spy.run(self.result)
@@ -186,6 +203,31 @@ class TestCaseTest(TestCase):
         spy = TestSpy("test_method")
         spy.run(self.result)
         assert spy.log == "set_up test_method tear_down"
+
+    ## PARTE 8
+    def test_assert_true(self):
+        self.assert_true(True)
+
+    def test_assert_false(self):
+        self.assert_false(False)
+
+    def test_assert_equal(self):
+        self.assert_equal("", "")
+        self.assert_equal("foo", "foo")
+        self.assert_equal([], [])
+        self.assert_equal(['foo'], ['foo'])
+        self.assert_equal((), ())
+        self.assert_equal(('foo',), ('foo',))
+        self.assert_equal({}, {})
+        self.assert_equal({'foo'}, {'foo'})
+
+    def test_assert_in(self):
+        animals = {'monkey': 'banana', 'cow': 'grass', 'seal': 'fish'}
+
+        self.assert_in('a', 'abc')
+        self.assert_in('foo', ['foo'])
+        self.assert_in(1, [1, 2, 3])
+        self.assert_in('monkey', animals)
 
 # PARTE 5
 
